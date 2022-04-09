@@ -3,6 +3,8 @@ import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { getArticles } from './services/api';
+import { getCategories } from './services/api';
+import { addNewArticle } from './services/api';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
@@ -39,6 +41,7 @@ export class Articles extends Component {
             deleteProductsDialog: false,
             product: this.emptyProduct,
             selectedProducts: null,
+            categories: null,
             submitted: false,
             globalFilter: null
         };
@@ -78,6 +81,19 @@ export class Articles extends Component {
                 console.log(res);
                 
             this.setState({ products: res})});
+        getCategories('res')
+        .then(cat => 
+            {
+
+                //let res = cat.map(position => ({...position}))
+                console.log(cat);
+                cat.map((index,ind)=>{
+                    console.log(index.name);
+                    console.log(cat[ind].name);
+                    
+                })
+            this.setState({ categories: cat})});
+        
        
     }
 
@@ -111,28 +127,40 @@ export class Articles extends Component {
     saveProduct() {
         let state = { submitted: true };
 
-        if (this.state.product.name.trim()) {
+        if (this.state.product.title.trim()) {
             let products = [...this.state.products];
             let product = {...this.state.product};
-            if (this.state.product.id) {
-                const index = this.findIndexById(this.state.product.id);
+            addNewArticle(this.state.product)
+            .then(cat => 
+                {
+                  if(cat.data==='Articles added!'){
+                    if (this.state.product.id) {
+                        const index = this.findIndexById(this.state.product.id);
+        
+                        products[index] = product;
+                        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+                    }
+                    else {
+                        product.id = this.createId();
+                        product.image = 'product-placeholder.svg';
+                        products.push(product);
+                        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Article Created', life: 3000 });
+                    }
+                    state = {
+                        ...state,
+                        products,
+                        productDialog: false,
+                        product: this.emptyProduct
+                    };
+                  }else{
+                    this.toast.show({ severity: 'error', summary: 'Error', detail: 'Creating Article has failed', life: 3000 });
 
-                products[index] = product;
-                this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            }
-            else {
-                product.id = this.createId();
-                product.image = 'product-placeholder.svg';
-                products.push(product);
-                this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
+                  }
+                   
+                    })
+          
 
-            state = {
-                ...state,
-                products,
-                productDialog: false,
-                product: this.emptyProduct
-            };
+   
         }
 
         this.setState(state);
@@ -235,7 +263,8 @@ export class Articles extends Component {
 
     onCategoryChange(e) {
         let product = {...this.state.product};
-        product['category'] = e.value;
+        product['category_id'] = e.target.name;
+        console.log(e.name)
         this.setState({ product });
     }
 
@@ -339,6 +368,8 @@ export class Articles extends Component {
                         <Column field="title" header="Title" sortable style={{ minWidth: '12rem' }}></Column>
                         <Column field="content" header="Content" sortable style={{ minWidth: '12rem' }}></Column>
                         <Column field="description" header="Description" sortable style={{ minWidth: '16rem' }}></Column>
+                        <Column field="category_id" header="Category" sortable style={{ minWidth: '12rem' }}></Column>
+
 {/*                         <Column field="image" header="Image" body={this.imageBodyTemplate}></Column>
                         <Column field="category_id" header="Category" sortable style={{ minWidth: '10rem' }}></Column>
                          <Column field="rating" header="Reviews" body={this.ratingBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
@@ -351,9 +382,14 @@ export class Articles extends Component {
                 <Dialog visible={this.state.productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={this.hideDialog}>
                     {this.state.product.image && <img src={`images/product/${this.state.product.image}`} onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} alt={this.state.product.image} className="product-image block m-auto pb-3" />}
                     <div className="field">
-                        <label htmlFor="name">Name</label>
-                        <InputText id="name" value={this.state.product.name} onChange={(e) => this.onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.name })} />
-                        {this.state.submitted && !this.state.product.name && <small className="p-error">Name is required.</small>}
+                        <label htmlFor="title">Title</label>
+                        <InputText id="title" value={this.state.product.title} onChange={(e) => this.onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.title })} />
+                        {this.state.submitted && !this.state.product.title && <small className="p-error">Title is required.</small>}
+                    </div>
+                    <div className="field">
+                        <label htmlFor="title">Content</label>
+                        <InputText id="content" value={this.state.product.content} onChange={(e) => this.onInputChange(e, 'content')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.content })} />
+                        {this.state.submitted && !this.state.product.content && <small className="p-error">Content is required.</small>}
                     </div>
                     <div className="field">
                         <label htmlFor="description">Description</label>
@@ -363,35 +399,22 @@ export class Articles extends Component {
                     <div className="field">
                         <label className="mb-3">Category</label>
                         <div className="formgrid grid">
+                        {this.state.categories && this.state.categories[0] && this.state.categories.map((index,ind)=>{
+
+                          return(
                             <div className="field-radiobutton col-6">
-                                <RadioButton inputId="category1" name="category" value="Accessories" onChange={this.onCategoryChange} checked={this.state.product.category === 'Accessories'} />
-                                <label htmlFor="category1">Accessories</label>
+                               
+                                    
+                                <RadioButton key={index._id} id={index._id} inputId={index._id} name={index._id} value={index.name} onChange={this.onCategoryChange}  />
+                                <label htmlFor="category1">{index.name}</label>
+                                
+                             
                             </div>
-                            <div className="field-radiobutton col-6">
-                                <RadioButton inputId="category2" name="category" value="Clothing" onChange={this.onCategoryChange} checked={this.state.product.category === 'Clothing'} />
-                                <label htmlFor="category2">Clothing</label>
-                            </div>
-                            <div className="field-radiobutton col-6">
-                                <RadioButton inputId="category3" name="category" value="Electronics" onChange={this.onCategoryChange} checked={this.state.product.category === 'Electronics'} />
-                                <label htmlFor="category3">Electronics</label>
-                            </div>
-                            <div className="field-radiobutton col-6">
-                                <RadioButton inputId="category4" name="category" value="Fitness" onChange={this.onCategoryChange} checked={this.state.product.category === 'Fitness'} />
-                                <label htmlFor="category4">Fitness</label>
-                            </div>
+                               )
+                            })}
                         </div>
                     </div>
 
-                    <div className="formgrid grid">
-                        <div className="field col">
-                            <label htmlFor="price">Price</label>
-                            <InputNumber id="price" value={this.state.product.price} onValueChange={(e) => this.onInputNumberChange(e, 'price')} mode="currency" currency="USD" locale="en-US" />
-                        </div>
-                        <div className="field col">
-                            <label htmlFor="quantity">Quantity</label>
-                            <InputNumber id="quantity" value={this.state.product.quantity} onValueChange={(e) => this.onInputNumberChange(e, 'quantity')} integeronly />
-                        </div>
-                    </div>
                 </Dialog>
 
                 <Dialog visible={this.state.deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={this.hideDeleteProductDialog}>
