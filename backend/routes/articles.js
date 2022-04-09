@@ -43,8 +43,8 @@ router.route('/:name').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
   });
 
-router.route('/:id').delete((req, res) => {
-  Articles.findByIdAndDelete(req.params.id)
+router.route('/delete').delete((req, res) => {
+  Articles.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id))
     .then(() => res.json('Articles deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });

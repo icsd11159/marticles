@@ -43,6 +43,19 @@ import axios from "axios";
        
       };
 
+         /**
+   * Get routes frequency
+   * @param resource
+   * @returns {AxiosPromise}
+   */
+          export const deleteArticle = ( resource) => {
+ 
+            return axios.delete('http://localhost:5000/articles/delete',resource).then(d => d.data );
+           
+          };
+
+      
+
     
 
   

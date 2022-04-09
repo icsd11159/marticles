@@ -6,6 +6,7 @@ import { getArticles } from './services/api';
 import { getCategories } from './services/api';
 import { addNewArticle } from './services/api';
 import { editArticle } from './services/api';
+import { deleteArticle } from './services/api';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
@@ -204,14 +205,24 @@ export class Articles extends Component {
     }
 
     deleteProduct() {
-        let products = this.state.products.filter(val => val.id !== this.state.product.id);
-        this.setState({
-            products,
-            deleteProductDialog: false,
-            product: this.emptyProduct
-        });
-        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-    }
+        deleteArticle(this.state.product)
+        .then((del)=>{
+            if(del==='Articles deleted.'){
+                let products = this.state.products.filter(val => val._id !== this.state.product._id);
+           this.setState({
+              products,
+              deleteProductDialog: false,
+              product: this.emptyProduct
+           });
+        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Article Deleted', life: 3000 });
+
+            }else{
+        this.toast.show({ severity: 'error', summary: 'Error', detail: 'Deleting Article has failed', life: 3000 });
+                
+            }
+          
+        })
+           }
 
     findIndexById(id) {
         let index = -1;
@@ -383,7 +394,7 @@ export class Articles extends Component {
                     <Toolbar className="mb-4" left={this.leftToolbarTemplate} right={this.rightToolbarTemplate}></Toolbar>
 
                     <DataTable ref={(el) => this.dt = el} value={this.state.products} selection={this.state.selectedProducts} onSelectionChange={(e) => this.setState({ selectedProducts: e.value })}
-                        dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                        dataKey="_id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
                         globalFilter={this.state.globalFilter} header={header} responsiveLayout="scroll">
