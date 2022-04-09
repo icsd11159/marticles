@@ -6,13 +6,8 @@ import axios from "axios";
    * @returns {AxiosPromise}
    */
   export const getArticles = ( resource) => {
-    console.log("resource");
-    console.log(resource);
  
-
-  return(
-    axios.post('http://localhost:5000/articles',resource)
-  )
+    return axios.get('http://localhost:5000/articles',resource).then(d => d.data );
    
   };
   

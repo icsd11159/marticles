@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const exerciseSchema = new Schema({
+const categoriesSchema = new Schema({
   name: {  type: String,
     required: true,
     unique: true,
@@ -13,6 +13,6 @@ const exerciseSchema = new Schema({
   timestamps: true,
 });
 
-const Exercise = mongoose.model('Categories', exerciseSchema);
+const Categories = mongoose.model('Categories', categoriesSchema);
 
-module.exports = Exercise;
+module.exports = Categories;

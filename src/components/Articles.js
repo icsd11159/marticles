@@ -47,7 +47,6 @@ export class Articles extends Component {
         this.leftToolbarTemplate = this.leftToolbarTemplate.bind(this);
         this.rightToolbarTemplate = this.rightToolbarTemplate.bind(this);
         this.imageBodyTemplate = this.imageBodyTemplate.bind(this);
-        this.priceBodyTemplate = this.priceBodyTemplate.bind(this);
         this.ratingBodyTemplate = this.ratingBodyTemplate.bind(this);
         this.statusBodyTemplate = this.statusBodyTemplate.bind(this);
         this.actionBodyTemplate = this.actionBodyTemplate.bind(this);
@@ -70,7 +69,16 @@ export class Articles extends Component {
     }
 
     componentDidMount() {
-        getArticles('resources').then(data => this.setState({ products: data }));
+
+        getArticles('resources')
+        .then(art => 
+            {
+
+                let res = art.map(position => ({...position}))
+                console.log(res);
+                
+            this.setState({ products: res})});
+       
     }
 
     formatCurrency(value) {
@@ -269,9 +277,6 @@ export class Articles extends Component {
         return <img src={`images/product/${rowData.image}`} onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} alt={rowData.image} className="product-image" />
     }
 
-    priceBodyTemplate(rowData) {
-        return this.formatCurrency(rowData.price);
-    }
 
     ratingBodyTemplate(rowData) {
         return <Rating value={rowData.rating} readOnly cancel={false} />;
@@ -318,7 +323,6 @@ export class Articles extends Component {
                 <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={this.deleteSelectedProducts} />
             </React.Fragment>
         );
-
         return (
             <div className="datatable-crud-demo">
                 <Toast ref={(el) => this.toast = el} />
@@ -332,13 +336,14 @@ export class Articles extends Component {
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
                         globalFilter={this.state.globalFilter} header={header} responsiveLayout="scroll">
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column>
-                        <Column field="code" header="Code" sortable style={{ minWidth: '12rem' }}></Column>
-                        <Column field="name" header="Name" sortable style={{ minWidth: '16rem' }}></Column>
-                        <Column field="image" header="Image" body={this.imageBodyTemplate}></Column>
-                        <Column field="price" header="Price" body={this.priceBodyTemplate} sortable style={{ minWidth: '8rem' }}></Column>
-                        <Column field="category" header="Category" sortable style={{ minWidth: '10rem' }}></Column>
-                        <Column field="rating" header="Reviews" body={this.ratingBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
+                        <Column field="title" header="Title" sortable style={{ minWidth: '12rem' }}></Column>
+                        <Column field="content" header="Content" sortable style={{ minWidth: '12rem' }}></Column>
+                        <Column field="description" header="Description" sortable style={{ minWidth: '16rem' }}></Column>
+{/*                         <Column field="image" header="Image" body={this.imageBodyTemplate}></Column>
+                        <Column field="category_id" header="Category" sortable style={{ minWidth: '10rem' }}></Column>
+                         <Column field="rating" header="Reviews" body={this.ratingBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
                         <Column field="inventoryStatus" header="Status" body={this.statusBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
+ */} 
                         <Column body={this.actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                     </DataTable>
                 </div>

@@ -1,9 +1,9 @@
 const router = require('express').Router();
 let Categories = require('../models/categories.model');
 
-router.route('/categories').get((req, res) => {
+router.route('/').get((req, res) => {
   Categories.find()
-    .then(users => res.json(users))
+    .then(Categories => res.json(Categories))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
