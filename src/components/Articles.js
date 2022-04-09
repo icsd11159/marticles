@@ -4,6 +4,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { getArticles } from './services/api';
 import { getCategories } from './services/api';
+import { MultiSelect } from 'primereact/multiselect';
 import { addNewArticle } from './services/api';
 import { editArticle } from './services/api';
 import { deleteArticle } from './services/api';
@@ -47,6 +48,14 @@ export class Articles extends Component {
             submitted: false,
             globalFilter: null,
             forEdit: false,
+            filterOptionslist : [
+                {label: 'Category', value: 'Category',name:'Category',code:'Category'},
+                {label: 'ID', value: 'ID',name:'ID',code:'ID'},
+                {label: 'Name', value: 'Name',name:'Name',code:'Name'},
+            ],
+            filterOptions : [],
+            filtersby: 'Id'
+            
         };
 
         //this.getArticles = new getArticles();
@@ -68,6 +77,7 @@ export class Articles extends Component {
         this.confirmDeleteSelected = this.confirmDeleteSelected.bind(this);
         this.deleteSelectedProducts = this.deleteSelectedProducts.bind(this);
         this.onCategoryChange = this.onCategoryChange.bind(this);
+        this.onFilterButton = this.onFilterButton(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.onInputNumberChange = this.onInputNumberChange.bind(this);
         this.hideDeleteProductDialog = this.hideDeleteProductDialog.bind(this);
@@ -95,8 +105,8 @@ export class Articles extends Component {
                     console.log(cat[ind].name);
                     
                 })
-            this.setState({ categories: cat})});
-        
+            this.setState({ categories: cat, filterOptionslist: cat})});
+         
        
     }
 
@@ -302,12 +312,25 @@ export class Articles extends Component {
         this.setState({ product });
     }
 
+    onFilterButton(e) {
+
+    }
+
     onInputChange(e, name) {
         const val = (e.target && e.target.value) || '';
         let product = {...this.state.product};
         product[`${name}`] = val;
 
         this.setState({ product });
+    }
+    
+    setfilterOptions(e) {
+        
+      
+        console.log(e)
+       
+        this.setState({ filterOptions: e });
+       
     }
 
     onInputNumberChange(e, name) {
@@ -362,11 +385,27 @@ export class Articles extends Component {
         const header = (
             <div className="table-header">
                 <h5 className="mx-0 my-1">Manage Products</h5>
+                
+                <div className="field-radiobutton col-6" >
+                  <MultiSelect style={{width: '100%'}} display="chip" optionLabel="name" value={this.state.filterOptions} options={this.state.filterOptionslist} placeholder='Select Categories' onChange={(e) => this.setfilterOptions(e.value)} />
+
+                </div>
+                <div>
+                <div className="field-radiobutton col-6" >
+                               Filter by:
+                               <RadioButton  key='Id' id='Id' inputId='Id' name='Id'  value={this.state.filtersby} onChange={this.onCategoryChange}  />
+                               <label htmlFor="category1">ID</label>       
+                               <RadioButton  key='Name' id='Name' inputId='Name' name='Name' value={this.state.filtersby} onChange={this.onCategoryChange}  />
+                               <label htmlFor="category1">Name</label>       
+          
+                 </div>   
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
                     <InputText type="search" onInput={(e) => this.setState({ globalFilter: e.target.value })} placeholder="Search..." />
                 </span>
-            </div>
+                </div>
+                </div>
+            
         );
         const productDialogFooter = (
             <React.Fragment>
