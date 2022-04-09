@@ -54,8 +54,8 @@ router.route('/:name').delete((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
   });
 
-router.route('/update/:id').post((req, res) => {
-  Articles.findById(req.params.id)
+router.route('/update').post((req, res) => { //update by id 
+  Articles.findById(mongoose.Types.ObjectId(req.body._id))
     .then(Articles => {
       Articles.content = req.body.content;
 

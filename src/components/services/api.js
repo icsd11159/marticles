@@ -31,6 +31,17 @@ import axios from "axios";
         return axios.post('http://localhost:5000/articles/add',resource).then(d => d.data );
        
       };
+      
+      /**
+   * Get routes frequency
+   * @param resource
+   * @returns {AxiosPromise}
+   */
+       export const editArticle = ( resource) => {
+ 
+        return axios.post('http://localhost:5000/articles/update',resource).then(d => d.data );
+       
+      };
 
     
 

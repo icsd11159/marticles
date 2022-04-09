@@ -5,6 +5,7 @@ import { Column } from 'primereact/column';
 import { getArticles } from './services/api';
 import { getCategories } from './services/api';
 import { addNewArticle } from './services/api';
+import { editArticle } from './services/api';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
@@ -43,7 +44,8 @@ export class Articles extends Component {
             selectedProducts: null,
             categories: null,
             submitted: false,
-            globalFilter: null
+            globalFilter: null,
+            forEdit: false,
         };
 
         //this.getArticles = new getArticles();
@@ -124,9 +126,9 @@ export class Articles extends Component {
         this.setState({ deleteProductsDialog: false });
     }
 
-    saveProduct() {
+    saveProduct() { //for both add and edit
         let state = { submitted: true };
-
+         if(!this.state.forEdit){ //if is for adding
         if (this.state.product.title.trim()) {
             let products = [...this.state.products];
             let product = {...this.state.product};
@@ -162,6 +164,25 @@ export class Articles extends Component {
 
    
         }
+    }else{
+        editArticle(this.state.product)
+        .then(edit => 
+            {
+              if(edit==='Articles updated!'){
+        this.setState({
+    
+            productDialog: false,
+            forEdit: false
+        });
+        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Article Updated', life: 3000 });
+
+    }else{
+        this.toast.show({ severity: 'error', summary: 'Error', detail: 'Updating Article has failed', life: 3000 });
+
+    }
+    })  
+
+    }
 
         this.setState(state);
     }
@@ -169,8 +190,10 @@ export class Articles extends Component {
     editProduct(product) {
         this.setState({
             product: { ...product },
-            productDialog: true
+            productDialog: true,
+            forEdit: true
         });
+       
     }
 
     confirmDeleteProduct(product) {
@@ -383,17 +406,17 @@ export class Articles extends Component {
                     {this.state.product.image && <img src={`images/product/${this.state.product.image}`} onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} alt={this.state.product.image} className="product-image block m-auto pb-3" />}
                     <div className="field">
                         <label htmlFor="title">Title</label>
-                        <InputText id="title" value={this.state.product.title} onChange={(e) => this.onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.title })} />
+                        <InputText id="title" value={this.state.product.title} disabled={this.state.forEdit} onChange={(e) => this.onInputChange(e, 'title')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.title })} />
                         {this.state.submitted && !this.state.product.title && <small className="p-error">Title is required.</small>}
                     </div>
                     <div className="field">
-                        <label htmlFor="title">Content</label>
+                        <label htmlFor="content">Content</label>
                         <InputText id="content" value={this.state.product.content} onChange={(e) => this.onInputChange(e, 'content')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.content })} />
                         {this.state.submitted && !this.state.product.content && <small className="p-error">Content is required.</small>}
                     </div>
                     <div className="field">
                         <label htmlFor="description">Description</label>
-                        <InputTextarea id="description" value={this.state.product.description} onChange={(e) => this.onInputChange(e, 'description')} required rows={3} cols={20} />
+                        <InputTextarea id="description" disabled={this.state.forEdit} value={this.state.product.description} onChange={(e) => this.onInputChange(e, 'description')} required rows={3} cols={20} />
                     </div>
 
                     <div className="field">
@@ -402,10 +425,10 @@ export class Articles extends Component {
                         {this.state.categories && this.state.categories[0] && this.state.categories.map((index,ind)=>{
 
                           return(
-                            <div className="field-radiobutton col-6">
+                            <div className="field-radiobutton col-6" >
                                
                                     
-                                <RadioButton key={index._id} id={index._id} inputId={index._id} name={index._id} value={index.name} onChange={this.onCategoryChange}  />
+                                <RadioButton disabled={this.state.forEdit} key={index._id} id={index._id} inputId={index._id} name={index._id} value={index.name} onChange={this.onCategoryChange}  />
                                 <label htmlFor="category1">{index.name}</label>
                                 
                              
