@@ -24,7 +24,7 @@ router.route('/add').post((req, res) => {
   .then(() => res.json('Articles added!'))
   .catch(err => res.status(400).json('Error: ' + err));
 });
-router.route('/:getall').get((req, res) => {
+router.route('/').get((req, res) => {
     //if req.content
     Articles.findById(req.params.id)
       .then(Articles => res.json(Articles))
