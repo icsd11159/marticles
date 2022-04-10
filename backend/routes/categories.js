@@ -1,5 +1,6 @@
 const router = require('express').Router();
 let Categories = require('../models/categories.model');
+const mongoose = require('mongoose');
 
 router.route('/').get((req, res) => {
   Categories.find()
@@ -17,9 +18,8 @@ router.route('/add').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-  
-  router.route('/:id').delete((req, res) => {
-    Categories.findByIdAndDelete(req.params.id)
+  router.route('/:delete').delete((req, res) => {
+    Categories.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id))
       .then(() => res.json('Categories deleted.'))
       .catch(err => res.status(400).json('Error: ' + err));
   });

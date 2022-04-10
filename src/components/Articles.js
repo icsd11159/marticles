@@ -176,7 +176,7 @@ export class Articles extends Component {
             addNewArticle(this.state.product)
             .then(cat => 
                 {
-                  if(cat.data==='Category added!'){
+                  if(cat==='Articles added!'){
                     if (this.state.product.id) {
                         const index = this.findIndexById(this.state.product.id);
         

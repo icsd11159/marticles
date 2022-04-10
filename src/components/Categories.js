@@ -4,19 +4,14 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { getArticles } from './services/api';
 import { getCategories } from './services/api';
-import { MultiSelect } from 'primereact/multiselect';
 import { addNewCategory } from './services/api';
-import { getSearchBy } from './services/api';
-import { editArticle } from './services/api';
 import { filterByCategory } from './services/api';
-import { deleteArticle } from './services/api';
+import { deleteCategory } from './services/api';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
 import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import '../styles/marTicles.css';
@@ -141,7 +136,7 @@ export class Categories extends Component {
 
     saveProduct() { //for both add and edit
         let state = { submitted: true };
-         if(!this.state.forEdit){ //if is for adding
+      
         if (this.state.product.name.trim()) {
             let products = [...this.state.products];
             let product = {...this.state.product};
@@ -170,25 +165,6 @@ export class Categories extends Component {
                     })
           
         }
-    }else{
-        editArticle(this.state.product)
-        .then(edit => 
-            {
-              if(edit==='Articles updated!'){
-        this.setState({
-    
-            productDialog: false,
-            forEdit: false
-        });
-        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Article Updated', life: 3000 });
-
-    }else{
-        this.toast.show({ severity: 'error', summary: 'Error', detail: 'Updating Article has failed', life: 3000 });
-
-    }
-    })  
-
-    }
 
         this.setState(state);
     }
@@ -210,9 +186,9 @@ export class Categories extends Component {
     }
 
     deleteProduct() {
-        deleteArticle(this.state.product)
+        deleteCategory(this.state.product)
         .then((del)=>{
-            if(del==='Articles deleted.'){
+            if(del==='Categories deleted.'){
                 let products = this.state.products.filter(val => val._id !== this.state.product._id);
            this.setState({
               products,
