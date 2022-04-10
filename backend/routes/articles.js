@@ -26,9 +26,13 @@ router.route('/add').post((req, res) => {
   .catch(err => res.status(400).json('Error: ' + err));
 });
 
-  router.route('/:getbycategory').get((req, res) => {
-    //if req.content
-    Articles.findById(req.params.category_id)
+  router.route('/bycategory').post((req, res) => {
+    let request = []
+     req.body.map((cat,ind)=>{
+      request.push(mongoose.Types.ObjectId(cat._id))
+    })  
+    console.log(request);
+    Articles.find({category_id: request})
       .then(Articles => res.json(Articles))
       .catch(err => res.status(400).json('Error: ' + err));
   });

@@ -53,6 +53,19 @@ import axios from "axios";
             return axios.delete('http://localhost:5000/articles/delete',resource).then(d => d.data );
            
           };
+      
+           /**
+   * Get routes frequency
+   * @param resource
+   * @returns {AxiosPromise}
+   */
+            export const  filterByCategory = ( resource) => {
+              console.log(resource);
+              
+              return axios.post('http://localhost:5000/articles/bycategory',resource).then(d => d.data );
+             
+            };
+         
 
       
 

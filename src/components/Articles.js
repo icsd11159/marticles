@@ -7,6 +7,7 @@ import { getCategories } from './services/api';
 import { MultiSelect } from 'primereact/multiselect';
 import { addNewArticle } from './services/api';
 import { editArticle } from './services/api';
+import { filterByCategory } from './services/api';
 import { deleteArticle } from './services/api';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
@@ -48,6 +49,7 @@ export class Articles extends Component {
             submitted: false,
             globalFilter: null,
             forEdit: false,
+            unfilterproduct: null,
             filterOptionslist : [
                 {label: 'Category', value: 'Category',name:'Category',code:'Category'},
                 {label: 'ID', value: 'ID',name:'ID',code:'ID'},
@@ -92,19 +94,14 @@ export class Articles extends Component {
 
                 let res = art.map(position => ({...position}))
                 console.log(res);
-                
-            this.setState({ products: res})});
+            this.setState({ products: res, unfilterproduct: res})});
         getCategories('res')
         .then(cat => 
             {
 
                 //let res = cat.map(position => ({...position}))
                 console.log(cat);
-                cat.map((index,ind)=>{
-                    console.log(index.name);
-                    console.log(cat[ind].name);
-                    
-                })
+              
             this.setState({ categories: cat, filterOptionslist: cat})});
          
        
@@ -325,12 +322,19 @@ export class Articles extends Component {
     }
     
     setfilterOptions(e) {
-        
-      
-        console.log(e)
-       
+         
+
         this.setState({ filterOptions: e });
-       
+        console.log(e);
+        if(e[0]){
+        filterByCategory(e) .then(cats => 
+            {
+             
+                this.setState({ products: cats });
+            })
+        }else{
+            this.setState({products: this.state.unfilterproduct})
+        }
     }
 
     onInputNumberChange(e, name) {
