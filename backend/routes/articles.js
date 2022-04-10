@@ -56,7 +56,7 @@ router.route('/delete').delete((req, res) => {
 });
 
 router.route('/deletecategory').delete((req, res) => {
-  Articles.findOneAndRemove({category_name:req.body.name})
+  Articles.updateOne({$pullAll: {category_name:req.body.name}})
     .then(() => res.json('Categories from Articles deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });

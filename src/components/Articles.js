@@ -311,8 +311,21 @@ export class Articles extends Component {
             });
 
             const products = [...this.state.products, ...importedData];
+            addNewArticle(products).then(cat => 
+                {
+                    if(cat==='Articles added!'){
+                       
+            
+                           
+                            this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Article Imported', life: 3000 });
+                        }else{
+                            this.toast.show({ severity: 'error', summary: 'Error', detail: 'Article Importing failed', life: 3000 });
 
+                        }
+                    
             this.setState({ products });
+                })
+           
         };
 
         reader.readAsText(file, 'UTF-8');

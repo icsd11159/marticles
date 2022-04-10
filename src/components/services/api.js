@@ -51,7 +51,7 @@ import axios from "axios";
       };
 
          /**
-   
+   deleting
    * @param resource
    * @returns {AxiosPromise}
    */

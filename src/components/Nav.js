@@ -1,6 +1,6 @@
 import { Menubar } from 'primereact/menubar';
 import 'primeicons/primeicons.css';
-import { PrimeIcons } from 'primereact/api';
+
 
 const Navigation = () => {
     const navlist = [
