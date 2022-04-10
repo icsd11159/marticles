@@ -65,6 +65,24 @@ import axios from "axios";
               return axios.post('http://localhost:5000/articles/bycategory',resource).then(d => d.data );
              
             };
+           /**
+   * Get routes frequency
+   * @param resource
+   * @returns {AxiosPromise}
+   */
+            export const  getSearchBy = ( resource) => {
+              console.log(resource.by.target.id);
+              if(resource.by.target.id==='Id'){
+                return axios.get('http://localhost:5000/articles/id/'+resource.value,resource.value).then(d => d.data );
+
+              }else{
+                return axios.get('http://localhost:5000/articles/title/'+resource.value,resource).then(d => d.data );
+
+              }
+             
+            };
+
+            
          
 
       

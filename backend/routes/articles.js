@@ -36,13 +36,14 @@ router.route('/add').post((req, res) => {
       .then(Articles => res.json(Articles))
       .catch(err => res.status(400).json('Error: ' + err));
   });
-router.route('/:id').get((req, res) => {
-  Articles.findById(req.params.id)
+router.route('/id/:value').get((req, res) => {
+  Articles.findById(mongoose.Types.ObjectId(req.params.value))
     .then(Articles => res.json(Articles))
     .catch(err => res.status(400).json('Error: ' + err));
 });
-router.route('/:name').get((req, res) => {
-    Articles.findById(req.params.name)
+router.route('/title/:value').get((req, res) => {
+  console.log(req.params.value);
+    Articles.find({title: {$regex:req.params.value}})
       .then(Articles => res.json(Articles))
       .catch(err => res.status(400).json('Error: ' + err));
   });

@@ -6,6 +6,7 @@ import { getArticles } from './services/api';
 import { getCategories } from './services/api';
 import { MultiSelect } from 'primereact/multiselect';
 import { addNewArticle } from './services/api';
+import { getSearchBy } from './services/api';
 import { editArticle } from './services/api';
 import { filterByCategory } from './services/api';
 import { deleteArticle } from './services/api';
@@ -56,7 +57,7 @@ export class Articles extends Component {
                 {label: 'Name', value: 'Name',name:'Name',code:'Name'},
             ],
             filterOptions : [],
-            filtersby: 'Id'
+            filtersby: null
             
         };
 
@@ -79,7 +80,7 @@ export class Articles extends Component {
         this.confirmDeleteSelected = this.confirmDeleteSelected.bind(this);
         this.deleteSelectedProducts = this.deleteSelectedProducts.bind(this);
         this.onCategoryChange = this.onCategoryChange.bind(this);
-        this.onFilterButton = this.onFilterButton(this);
+        this.onFilterButton = this.onFilterButton.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.onInputNumberChange = this.onInputNumberChange.bind(this);
         this.hideDeleteProductDialog = this.hideDeleteProductDialog.bind(this);
@@ -118,6 +119,22 @@ export class Articles extends Component {
             productDialog: true
         });
     }
+
+    globalSearch(e) {
+        if(this.state.filtersby){//an den einai chekarismeno to filterby
+           let req={
+                by:this.state.filtersby,
+                value: e.target.value
+            }
+         getSearchBy(req).then((search=>{
+            this.setState({ globalFilter: search[0].title})
+
+         }))
+        }else{
+            this.setState({ globalFilter: e.target.value })
+        }
+      
+    } 
 
     hideDialog() {
         this.setState({
@@ -309,8 +326,10 @@ export class Articles extends Component {
         this.setState({ product });
     }
 
-    onFilterButton(e) {
 
+    onFilterButton(e) {
+        this.setState({filtersby:e})
+    
     }
 
     onInputChange(e, name) {
@@ -397,15 +416,15 @@ export class Articles extends Component {
                 <div>
                 <div className="field-radiobutton col-6" >
                                Filter by:
-                               <RadioButton  key='Id' id='Id' inputId='Id' name='Id'  value={this.state.filtersby} onChange={this.onCategoryChange}  />
+                               <RadioButton  key='Id' id='Id' inputId='Id' name='Id' checked={this.state.filtersby==='Id'}   onChange={(e) => this.onFilterButton(e)}  />
                                <label htmlFor="category1">ID</label>       
-                               <RadioButton  key='Name' id='Name' inputId='Name' name='Name' value={this.state.filtersby} onChange={this.onCategoryChange}  />
-                               <label htmlFor="category1">Name</label>       
+                               <RadioButton  key='Title' id='Title' inputId='Title' name='Title' checked={this.state.filtersby==='Title'} onChange={(e) => this.onFilterButton(e)}  />
+                               <label htmlFor="category1">Title</label>       
           
                  </div>   
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
-                    <InputText type="search" onInput={(e) => this.setState({ globalFilter: e.target.value })} placeholder="Search..." />
+                    <InputText type="search" onInput={(e) => this.globalSearch(e)} placeholder="Search..." />
                 </span>
                 </div>
                 </div>
@@ -482,7 +501,7 @@ export class Articles extends Component {
                             <div className="field-radiobutton col-6" >
                                
                                     
-                                <RadioButton disabled={this.state.forEdit} key={index._id} id={index._id} inputId={index._id} name={index._id} value={index.name} onChange={this.onCategoryChange}  />
+                                <RadioButton disabled={this.state.forEdit} key={index._id} id={index._id} inputId={index._id} name={index._id} value={index.name} onChange={this.filterChange}  />
                                 <label htmlFor="category1">{index.name}</label>
                                 
                              
