@@ -1,7 +1,7 @@
 import axios from "axios";
 
   /**
-   * Get routes frequency
+   
    * @param resource
    * @returns {AxiosPromise}
    */
@@ -12,7 +12,7 @@ import axios from "axios";
   };
 
    /**
-   * Get routes frequency
+   
    * @param resource
    * @returns {AxiosPromise}
    */
@@ -22,7 +22,7 @@ import axios from "axios";
      
     };
      /**
-   * Get routes frequency
+   
    * @param resource
    * @returns {AxiosPromise}
    */
@@ -33,7 +33,7 @@ import axios from "axios";
       };
       
       /**
-   * Get routes frequency
+   
    * @param resource
    * @returns {AxiosPromise}
    */
@@ -44,7 +44,7 @@ import axios from "axios";
       };
 
          /**
-   * Get routes frequency
+   
    * @param resource
    * @returns {AxiosPromise}
    */
@@ -55,7 +55,6 @@ import axios from "axios";
           };
       
            /**
-   * Get routes frequency
    * @param resource
    * @returns {AxiosPromise}
    */
@@ -66,17 +65,19 @@ import axios from "axios";
              
             };
            /**
-   * Get routes frequency
+   * Get getSearchBy
    * @param resource
    * @returns {AxiosPromise}
    */
             export const  getSearchBy = ( resource) => {
-              console.log(resource.by.target.id);
-              if(resource.by.target.id==='Id'){
-                return axios.get('http://localhost:5000/articles/id/'+resource.value,resource.value).then(d => d.data );
-
+             
+              
+              if(resource.by==='Id'){
+                //Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer
+                return axios.get('http://localhost:5000/articles/id/'+resource.value,resource.value).then(d => d.data ).catch(err => ('Error: ' + err));;
+                
               }else{
-                return axios.get('http://localhost:5000/articles/title/'+resource.value,resource).then(d => d.data );
+                return axios.get('http://localhost:5000/articles/title/'+resource.value,resource).then(d => d.data ).catch(err => ('Error: ' + err));
 
               }
              

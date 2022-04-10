@@ -121,17 +121,34 @@ export class Articles extends Component {
     }
 
     globalSearch(e) {
-        if(this.state.filtersby){//an den einai chekarismeno to filterby
+        if(this.state.filtersby && e.target.value){//an den einai chekarismeno to filterby
            let req={
-                by:this.state.filtersby,
+                by:this.state.filtersby.value?this.state.filtersby.value:this.state.filtersby,
                 value: e.target.value
             }
-         getSearchBy(req).then((search=>{
-            this.setState({ globalFilter: search[0].title})
+            if(req.by==='Title' ||(req.by==='Id' && (encodeURI(req.value).split(/%..|./).length - 1)>=12)){ 
 
-         }))
+         getSearchBy(req).then((search)=>{
+             console.log(search);
+             if(search   && search.title){
+                let p=[];
+                p.push(search)
+                this.setState({ products: p})
+             }
+             else{
+                this.setState({ globalFilter: null })
+                this.toast.show({ severity: 'error', summary: 'Error', detail: search.error, life: 3000 });
+                     
+                 }
+
+         })
+        }
         }else{
-            this.setState({ globalFilter: e.target.value })
+            if(! e.target.value){
+            this.setState({ products: this.state.unfilterproduct })
+
+            }
+            this.setState({ globalFilter: e.target.value ,filtersby:null})
         }
       
     } 
@@ -329,7 +346,6 @@ export class Articles extends Component {
 
     onFilterButton(e) {
         this.setState({filtersby:e})
-    
     }
 
     onInputChange(e, name) {
@@ -416,15 +432,16 @@ export class Articles extends Component {
                 <div>
                 <div className="field-radiobutton col-6" >
                                Filter by:
-                               <RadioButton  key='Id' id='Id' inputId='Id' name='Id' checked={this.state.filtersby==='Id'}   onChange={(e) => this.onFilterButton(e)}  />
-                               <label htmlFor="category1">ID</label>       
-                               <RadioButton  key='Title' id='Title' inputId='Title' name='Title' checked={this.state.filtersby==='Title'} onChange={(e) => this.onFilterButton(e)}  />
-                               <label htmlFor="category1">Title</label>       
+                               <RadioButton key='Id' id='Id' inputId='Id'   value='Id' name='filtersby' onChange={(e) => this.onFilterButton(e.value)} checked={this.state.filtersby === 'Id'} />
+                               <label htmlFor="Id">ID</label>  
+                               <RadioButton key='Title' id='Title' inputId='Title' value='Title' name='filtersby'  onChange={(e) => this.onFilterButton(e.value)} checked={this.state.filtersby === 'Title'} />
+                               <label htmlFor="Title">Title</label>  
+                               
           
                  </div>   
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
-                    <InputText type="search" onInput={(e) => this.globalSearch(e)} placeholder="Search..." />
+                    <InputText type="search"  onInput={(e) => this.globalSearch(e)} placeholder="Search..." />
                 </span>
                 </div>
                 </div>
