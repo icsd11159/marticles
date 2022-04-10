@@ -37,7 +37,7 @@ router.route('/add').post((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
   });
 router.route('/id/:value').get((req, res) => {
-  console.log(mongoose.Types.ObjectId(req.params.value));
+ // console.log(mongoose.Types.ObjectId(req.params.value));
   Articles.findById(mongoose.Types.ObjectId(req.params.value))
     .then(Articles => res.json(Articles))
     .catch(err => res.status(400).json('Error: ' + err));

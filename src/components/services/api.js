@@ -31,6 +31,13 @@ import axios from "axios";
         return axios.post('http://localhost:5000/articles/add',resource).then(d => d.data );
        
       };
+
+      
+      export const addNewCategory = ( resource) => {
+ 
+        return axios.post('http://localhost:5000/categories/add',resource).then(d => d.data ).catch(err => ('Error: ' + err));
+       
+      };
       
       /**
    

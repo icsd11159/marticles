@@ -17,7 +17,6 @@ import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import '../styles/marTicles.css';
@@ -177,7 +176,7 @@ export class Articles extends Component {
             addNewArticle(this.state.product)
             .then(cat => 
                 {
-                  if(cat.data==='Articles added!'){
+                  if(cat.data==='Category added!'){
                     if (this.state.product.id) {
                         const index = this.findIndexById(this.state.product.id);
         
@@ -306,7 +305,8 @@ export class Articles extends Component {
                     return obj;
                 }, {});
 
-                processedData['id'] = this.createId();
+                processedData['_id'] = this.createId();
+                //add import
                 return processedData;
             });
 
@@ -423,7 +423,7 @@ export class Articles extends Component {
     render() {
         const header = (
             <div className="table-header">
-                <h5 className="mx-0 my-1">Manage Products</h5>
+                <h5 className="mx-0 my-1">Manage Articles</h5>
                 
                 <div className="field-radiobutton col-6" >
                   <MultiSelect style={{width: '100%'}} display="chip" optionLabel="name" value={this.state.filterOptions} options={this.state.filterOptionslist} placeholder='Select Categories' onChange={(e) => this.setfilterOptions(e.value)} />
@@ -492,7 +492,7 @@ export class Articles extends Component {
                     </DataTable>
                 </div>
 
-                <Dialog visible={this.state.productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={this.hideDialog}>
+                <Dialog visible={this.state.productDialog} style={{ width: '450px' }} header="Article Details" modal className="p-fluid" footer={productDialogFooter} onHide={this.hideDialog}>
                     {this.state.product.image && <img src={`images/product/${this.state.product.image}`} onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} alt={this.state.product.image} className="product-image block m-auto pb-3" />}
                     <div className="field">
                         <label htmlFor="title">Title</label>
@@ -533,14 +533,14 @@ export class Articles extends Component {
                 <Dialog visible={this.state.deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={this.hideDeleteProductDialog}>
                     <div className="confirmation-content">
                         <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                        {this.state.product && <span>Are you sure you want to delete <b>{this.state.product.name}</b>?</span>}
+                        {this.state.product && <span>Are you sure you want to delete <b>{this.state.product.title}</b>?</span>}
                     </div>
                 </Dialog>
 
                 <Dialog visible={this.state.deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={this.hideDeleteProductsDialog}>
                     <div className="confirmation-content">
                         <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                        {this.state.product && <span>Are you sure you want to delete the selected products?</span>}
+                        {this.state.product && <span>Are you sure you want to delete the selected articles?</span>}
                     </div>
                 </Dialog>
             </div>
