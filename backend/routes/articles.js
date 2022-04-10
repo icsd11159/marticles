@@ -12,13 +12,13 @@ router.route('/add').post((req, res) => {
   const title = req.body.title;
   const description = req.body.description;
   const content = req.body.content;
-  const category_id = mongoose.Types.ObjectId(req.body.category_id);
+  const category_name = req.body.category_name;
 
   const newArticles = new Articles({
     title,
     description,
     content,
-    category_id,
+    category_name,
   });
 
   newArticles.save()
@@ -29,10 +29,10 @@ router.route('/add').post((req, res) => {
   router.route('/bycategory').post((req, res) => {
     let request = []
      req.body.map((cat,ind)=>{
-      request.push(mongoose.Types.ObjectId(cat._id))
+      request.push(cat.name)
     })  
     console.log(request);
-    Articles.find({category_id: request})
+    Articles.find({category_name: request})
       .then(Articles => res.json(Articles))
       .catch(err => res.status(400).json('Error: ' + err));
   });
@@ -50,15 +50,17 @@ router.route('/title/:value').get((req, res) => {
   });
 
 router.route('/delete').delete((req, res) => {
-  Articles.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id))
+  Articles.findByIdAndRemove(mongoose.Types.ObjectId(req.body._id))
     .then(() => res.json('Articles deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 });
-router.route('/:name').delete((req, res) => {
-    Articles.findByIdAndDelete(req.params.name)
-      .then(() => res.json('Articles deleted.'))
-      .catch(err => res.status(400).json('Error: ' + err));
-  });
+
+router.route('/deletecategory').delete((req, res) => {
+  Articles.findOneAndRemove({category_name:req.body.name})
+    .then(() => res.json('Categories from Articles deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 
 router.route('/update').post((req, res) => { //update by id 
   Articles.findById(mongoose.Types.ObjectId(req.body._id))

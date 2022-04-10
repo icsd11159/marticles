@@ -66,6 +66,14 @@ import axios from "axios";
             return axios.delete('http://localhost:5000/categories/delete',resource).then(d => d.data );
            
           };
+
+          
+          export const deleteArticlesCategory = ( resource) => {
+ 
+            return axios.delete('http://localhost:5000/articles/deletecategory',resource).then(d => d.data );
+           
+          };
+
       
            /**
    * @param resource

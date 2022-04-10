@@ -22,8 +22,8 @@ const userSchema = new Schema({
     required: false,
     unique: false
   },
-  category_id:{
-    type: Object,
+  category_name:{
+    type: String,
     required: false,
     unique: false,
     trim: true,

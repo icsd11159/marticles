@@ -18,17 +18,12 @@ router.route('/add').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-  router.route('/:delete').delete((req, res) => {
-    Categories.findByIdAndDelete(mongoose.Types.ObjectId(req.body._id))
+  router.route('/delete').delete((req, res) => {
+    Categories.findByIdAndRemove(mongoose.Types.ObjectId(req.body._id))
       .then(() => res.json('Categories deleted.'))
       .catch(err => res.status(400).json('Error: ' + err));
   });
-  router.route('/name').delete((req, res) => { //edw na kanei delete k sta category+id twn articles
-    Categories.findOneAndDelete(req.params.name)
-      .then(() => res.json('Categories deleted.'))
-      .catch(err => res.status(400).json('Error: ' + err));
-  });
-  
+
 
 
 module.exports = router;

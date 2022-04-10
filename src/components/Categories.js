@@ -6,6 +6,7 @@ import { getArticles } from './services/api';
 import { getCategories } from './services/api';
 import { addNewCategory } from './services/api';
 import { filterByCategory } from './services/api';
+import { deleteArticlesCategory } from './services/api';
 import { deleteCategory } from './services/api';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
@@ -75,7 +76,6 @@ export class Categories extends Component {
         this.exportCSV = this.exportCSV.bind(this);
         this.confirmDeleteSelected = this.confirmDeleteSelected.bind(this);
         this.deleteSelectedProducts = this.deleteSelectedProducts.bind(this);
-        this.onCategoryChange = this.onCategoryChange.bind(this);
         this.onFilterButton = this.onFilterButton.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.onInputNumberChange = this.onInputNumberChange.bind(this);
@@ -195,10 +195,17 @@ export class Categories extends Component {
               deleteProductDialog: false,
               product: this.emptyProduct
            });
-        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Article Deleted', life: 3000 });
+           deleteArticlesCategory()
+           .then((delcat)=>{
+              if(delcat==='Categories from Articles deleted.'){
+             this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Category from Articles Deleted', life: 3000 });
+
+              }
+           })
+        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Category Deleted', life: 3000 });
 
             }else{
-        this.toast.show({ severity: 'error', summary: 'Error', detail: 'Deleting Article has failed', life: 3000 });
+        this.toast.show({ severity: 'error', summary: 'Error', detail: 'Deleting Category has failed', life: 3000 });
                 
             }
           
@@ -276,12 +283,7 @@ export class Categories extends Component {
         this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
     }
 
-    onCategoryChange(e) {
-        let product = {...this.state.product};
-        product['category_id'] = e.target.name;
-        console.log(e.name)
-        this.setState({ product });
-    }
+   
 
 
     onFilterButton(e) {

@@ -338,7 +338,7 @@ export class Articles extends Component {
 
     onCategoryChange(e) {
         let product = {...this.state.product};
-        product['category_id'] = e.target.name;
+        product['category_name'] = e.target.name;
         console.log(e.name)
         this.setState({ product });
     }
@@ -481,10 +481,10 @@ export class Articles extends Component {
                         <Column field="title" header="Title" sortable style={{ minWidth: '12rem' }}></Column>
                         <Column field="content" header="Content" sortable style={{ minWidth: '12rem' }}></Column>
                         <Column field="description" header="Description" sortable style={{ minWidth: '16rem' }}></Column>
-                        <Column field="category_id" header="Category" sortable style={{ minWidth: '12rem' }}></Column>
+                        <Column field="category_name" header="Category" sortable style={{ minWidth: '12rem' }}></Column>
 
 {/*                         <Column field="image" header="Image" body={this.imageBodyTemplate}></Column>
-                        <Column field="category_id" header="Category" sortable style={{ minWidth: '10rem' }}></Column>
+                        <Column field="category_name" header="Category" sortable style={{ minWidth: '10rem' }}></Column>
                          <Column field="rating" header="Reviews" body={this.ratingBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
                         <Column field="inventoryStatus" header="Status" body={this.statusBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
  */} 
@@ -518,7 +518,7 @@ export class Articles extends Component {
                             <div className="field-radiobutton col-6" >
                                
                                     
-                                <RadioButton disabled={this.state.forEdit} key={index._id} id={index._id} inputId={index._id} name={index._id} value={index.name} onChange={this.filterChange}  />
+                                <RadioButton disabled={this.state.forEdit} key={index.name} id={index.name} inputId={index.name} name={index.name} value={index.name} onChange={e=>this.onCategoryChange(e)}  />
                                 <label htmlFor="category1">{index.name}</label>
                                 
                              
